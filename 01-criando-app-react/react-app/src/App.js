@@ -1,5 +1,5 @@
-import React from "react";
-import "./App.css";
+import React from 'react';
+import './App.css';
 
 class App extends React.Component {
     state = {
@@ -7,26 +7,31 @@ class App extends React.Component {
         posts: [
             {
                 id: 1,
-                title: "Título 1",
-                body: "Corpo 1",
+                title: 'Título 1',
+                body: 'Corpo 1',
             },
             {
                 id: 2,
-                title: "Título 2",
-                body: "Corpo 2",
+                title: 'Título 2',
+                body: 'Corpo 2',
             },
             {
                 id: 3,
-                title: "Título 3",
-                body: "Corpo 3",
+                title: 'Título 3',
+                body: 'Corpo 3',
             },
         ],
     };
 
     componentDidMount() {
         const { posts, counter } = this.state;
-        posts[0].title = 'Mudando Título 1';
-        setTimeout(() => {}, 2000);
+        posts[0].title = 'Mudando O Título 1';
+        setTimeout(() => {
+            this.setState({
+                posts,
+                counter: counter + 1,
+            });
+        }, 2000);
     }
 
     render() {
