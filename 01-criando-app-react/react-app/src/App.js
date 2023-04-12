@@ -23,10 +23,26 @@ class App extends React.Component {
         ],
     };
 
+    timeoutUpdate = null;
+
     componentDidMount() {
+        this.handleTimeout();
+    }
+
+    componentDidUpdate() {
+        clearTimeout();
+        this.handleTimeout();
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeoutUpdate);
+    }
+
+
+    handleTimeout() {
         const { posts, counter } = this.state;
         posts[0].title = 'Mudando O Título 1';
-        setTimeout(() => {
+        this.timeoutUpdate = setTimeout(() => {
             this.setState({
                 posts,
                 counter: counter + 1,
