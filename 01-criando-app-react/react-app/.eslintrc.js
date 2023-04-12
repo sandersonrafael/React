@@ -17,5 +17,10 @@ module.exports = {
         'no-unused-vars': 'warn',
         'object-curly-spacing': 'off',
         'linebreak-style': 'off',
+        'object-curly-spacing': ['warn', 'always'],
+        'arrow-parens': 'off',
+        'semi': ['warn', 'always'],
+        'comma-dangle': 'off',
+        'max-len': 'off',
     },
 };
