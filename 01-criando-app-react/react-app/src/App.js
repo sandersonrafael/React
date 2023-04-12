@@ -1,4 +1,5 @@
 import React from 'react';
+import { PostCard } from './components/PostCard';
 import './App.css';
 
 class App extends React.Component {
@@ -36,13 +37,13 @@ class App extends React.Component {
             <section className="container">
                 <div className="posts">
                     {posts.map((post) => (
-                        <div key={post.id} className="post">
-                            <img src={post.cover} alt={post.title} />
-                            <div className="post-content">
-                                <h1>{post.title}</h1>
-                                <p>{post.body}</p>
-                            </div>
-                        </div>
+                        <PostCard
+                            key={post.id}
+                            title={post.title}
+                            body={post.body}
+                            id={post.id}
+                            cover={post.cover}
+                        />
                     ))}
                 </div>
             </section>

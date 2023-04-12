@@ -22,5 +22,8 @@ module.exports = {
         'semi': ['warn', 'always'],
         'comma-dangle': 'off',
         'max-len': 'off',
+        'react/jsx-key': 'off',
+        'react/prop-types': 'off',
+        'react/react-in-jsx-scope': 'off',
     },
 };
