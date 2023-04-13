@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { loadPosts } from '../../utils/load-posts';
 import { Posts } from '../../components/Posts';
 import { Button } from '../../components/Button';
+import { TextInput } from '../../components/TextInput';
 import './styles.css';
 
 export class Home extends Component {
@@ -10,6 +11,7 @@ export class Home extends Component {
         allPosts: [],
         page: 0,
         postsPerPage: 10,
+        searchValue: '',
     };
 
     async componentDidMount() {
@@ -33,21 +35,47 @@ export class Home extends Component {
         });
     };
 
+    handleChange = (e) => {
+        const { value } = e.target; // target referencia elemento que realizou o evento
+        this.setState({ searchValue: value });
+    };
+
     render() {
-        const { posts, page, postsPerPage, allPosts } = this.state;
+        const { posts, page, postsPerPage, allPosts, searchValue } = this.state;
         const noMorePosts = page + postsPerPage >= allPosts.length;
 
+        const filteredPosts = !!searchValue ?
+            allPosts.filter((post) => {
+                return post.title
+                    .toLowerCase()
+                    .includes(searchValue.toLocaleLowerCase());
+            }) :
+            posts;
+
         return (
+
             <section className="container">
-                <Posts posts={posts} />
+
+                <div className="search-container">
+
+                    {!!searchValue && <h1>Search Value: {searchValue}</h1>}
+
+                    <TextInput handleChange={this.handleChange} searchValue={searchValue} />
+
+                </div>
+
+                {filteredPosts.length > 0 && <Posts posts={filteredPosts} />}
+
+                {filteredPosts.length === 0 && (
+                    <p>Não há postagens correspondentes com a sua busca.</p>
+                )}
 
                 <div className="button-container">
-                    <Button
-                        text={'Carregar mais...'}
-                        click={this.loadMorePosts}
-                        // ^ não é o onClick do jsx. É apenas uma propriedade que é passada nas props
-                        disabled={noMorePosts}
-                    />
+                    {!searchValue && !noMorePosts && (
+                        <Button
+                            text={'Carregar mais...'} click={this.loadMorePosts} disabled={noMorePosts}
+                        />
+                    )}
                 </div>
             </section>
         );
