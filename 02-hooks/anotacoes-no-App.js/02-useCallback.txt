@@ -1,0 +1,37 @@
+// useCallback é utilizado para salvar funções e não atualizar na página sem necessidade
+// o React.memo é a mesma coisa, mas salva valores em vez de funções
+
+import P from 'prop-types';
+import './App.css';
+import React, { useState, useCallback } from 'react';
+
+const Button = React.memo(function memo({ incrementButton }) {
+    console.log('Filho renderizou');
+    return <button onClick={() => incrementButton(100)}>+</button>;
+});
+
+Button.propTypes = {
+    incrementButton: P.func,
+};
+
+function App() {
+    const [counter, setCounter] = useState(0);
+
+    // useCallback recebe dependências em array também, então pode-se evitar o uso fazendo
+    // uma função de callback dentro do setCounter, em vez de usando o próprio counter, assim
+    // o incrementCounter não vai atualizar sem necessidade devido ao React.memo(() => {})
+    const incrementCounter = useCallback((num) => {
+        setCounter((counter) => counter + num);
+    }, []);
+
+    console.log('Pai renderizou');
+
+    return (
+        <div className="App">
+            <h1>C1: {counter}</h1>
+            <Button incrementButton={incrementCounter} />
+        </div>
+    );
+}
+
+export default App;
