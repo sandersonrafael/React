@@ -1,83 +1,78 @@
-// useRef -> referencia determinado elemento no documento. Necessário utilizar a chave current, como:
-// input.current
-// para ter acesso ref, é necessário referenciar dentro do elemento desejado, como o
-// <input ref={input} />
+{
+  // useContext -> cria um contexto onde todos os elementos filhos do contexto podem utilizar as suas
+  // props sem precisar passar de filho para filho consecutivamente
+  // criar um objeto para o estado global, que possa ser utilizado, como o "globalState" deste documento
+  // necessário utilizar da seguinte forma:
+  /*
+    <NomeDoContexto.Provider value={objetoDoContextoGlobal}>
+        <FilhosDoContexto>
+            <Etc />
+        </FilhosDoContexto>
+    </NomeDoContexto.Provider>
+*/
+  // se quiser atualizar algum dos valores do objeto do contexto, é necessário "atualizar todos", mesmo
+  // que os seus valores se mantenham os mesmos, devem ser referenciados e definidos como eles mesmos, como:
+  // <p onClick={() => setContextState({ ...contextState, counter: counter + 1 })}>
+}
 
-import P from 'prop-types';
-import { useEffect, useState, useMemo, useRef } from 'react';
+import React, { useContext, useState } from 'react';
 import './App.css';
 
-const Post = ({ post, handleClick }) => {
-    console.log('Filho renderizou');
-    return (
-        <div key={post.id} className="post">
-            <h1 onClick={() => handleClick(post.title)}>{post.title}</h1>
-            <p>{post.body}</p>
-        </div>
-    );
+const globalState = {
+  title: 'O título do contexto',
+  body: 'O body do contexto',
+  counter: 0,
 };
 
-Post.propTypes = {
-    post: P.shape({
-        id: P.number,
-        title: P.string,
-        body: P.string,
-    }),
-    handleClick: P.func,
+const GlobalContext = React.createContext();
+
+// eslint-disable-next-line
+const Div = ({ children }) => {
+  return (
+    <>
+      <H1 />
+      <P />
+    </>
+  );
+};
+
+// eslint-disable-next-line
+const H1 = () => {
+  const theContext = useContext(GlobalContext);
+  const {
+    contextState: { title, counter },
+  } = theContext;
+  return (
+    <h1>
+      {title} {counter}
+    </h1>
+  );
+};
+
+// eslint-disable-next-line
+const P = () => {
+  const theContext = useContext(GlobalContext);
+  const {
+    contextState: { body, counter },
+    contextState,
+    setContextState,
+  } = theContext;
+  return (
+    <p
+      onClick={() => setContextState({ ...contextState, counter: counter + 1 })}
+    >
+      {body}
+    </p>
+  );
 };
 
 function App() {
-    const [posts, setPosts] = useState([]);
-    const [value, setValue] = useState('');
-    const input = useRef(null); // -> está sem nenhuma referência, ainda
-
-    console.log('Pai renderizou!');
-
-    // componentDidMount
-    useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/posts')
-            .then((res) => res.json())
-            .then((posts) => setPosts(posts));
-    }, []);
-
-    useEffect(() => {
-        input.current.focus();
-        // input.current.blur();
-        console.log(input.current);
-        // input.current(value);
-    }, [value]);
-
-    const handleClick = (value) => {
-        setValue(value /* .target.innerText */);
-        // window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    return (
-        <div className="App">
-            <p>
-                <input
-                    ref={input}
-                    type="search"
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                />
-            </p>
-            {useMemo(() => {
-                return (
-                    posts.length > 0 &&
-                    posts.map((post) => (
-                        <Post
-                            key={post.id}
-                            post={post}
-                            handleClick={handleClick}
-                        />
-                    ))
-                );
-            }, [posts])}
-            {}
-            {posts.length <= 0 && <p>Carregando posts...</p>}
-        </div>
-    );
+  const [contextState, setContextState] = useState(globalState);
+  return (
+    <GlobalContext.Provider value={{ contextState, setContextState }}>
+      <Div />
+    </GlobalContext.Provider>
+  );
 }
 
 export default App;
